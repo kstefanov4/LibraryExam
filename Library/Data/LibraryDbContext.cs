@@ -1,18 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Library.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Data
 {
-    public class LibraryDbContext : IdentityDbContext
+    public class LibraryDbContext : IdentityDbContext<IdentityUser>
     {
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options)
             : base(options)
         {
         }
 
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<IdentityUserBook> IdentityUserBooks { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            /* builder
+            builder.Entity<IdentityUserBook>()
+                .HasKey(x => new { x.BookId, x.CollectorId });
+
+
+            builder
                 .Entity<Book>()
                 .HasData(new Book()
                 {
@@ -52,7 +63,6 @@ namespace Library.Data
                     Id = 5,
                     Name = "Fantasy"
                 });
-            */
 
             base.OnModelCreating(builder);
         }
