@@ -24,10 +24,8 @@ namespace Library.Controllers
             {
                 await bookService.RemoveBookFromCollectionAsync(id, GetUserId());
             }
-            catch (Exception)
+            catch (ArgumentException)
             {
-
-                throw;
             }
 
             return RedirectToAction("Mine");
