@@ -18,13 +18,11 @@ namespace Library.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddToCollection(int id)
+        public async Task<IActionResult> RemoveFromCollection(int id)
         {
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                await bookService.AddBookToCollectionAsync(id, userId);
+                await bookService.RemoveBookFromCollectionAsync(id, GetUserId());
             }
             catch (Exception)
             {
@@ -32,7 +30,29 @@ namespace Library.Controllers
                 throw;
             }
 
-            return View();
+            return RedirectToAction("Mine");
+        }
+
+        public async Task<IActionResult> Mine()
+        {
+            var model = await bookService.GetMineBooksAsync(GetUserId());
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCollection(int id)
+        {
+            try
+            {
+                await bookService.AddBookToCollectionAsync(id, GetUserId());
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return RedirectToAction("All");
         }
     }
 }

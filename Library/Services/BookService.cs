@@ -63,5 +63,38 @@ namespace Library.Services
                 Category = x?.Category?.Name
             });
         }
+
+        public async Task<MineViewModel> GetMineBooksAsync(string userId)
+        {
+            var entities = await context.IdentityUserBooks
+                .Where(x => x.CollectorId == userId)
+                .Select(x => new BookViewModel
+                {
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    Id = x.Book.Id,
+                    ImageUrl = x.Book.ImageUrl,
+                    Description = x.Book.Description,
+                    Category = x.Book.Category.Name
+                }).ToListAsync();
+
+            return new MineViewModel
+            {
+                Books = entities
+            };
+            
+        }
+
+        public async Task RemoveBookFromCollectionAsync(int bookId, string userId)
+        {
+            var userBook = await context.IdentityUserBooks
+                .FirstOrDefaultAsync(x => x.BookId == bookId && x.CollectorId == userId);
+
+            if (userBook != null)
+            {
+                context.IdentityUserBooks.Remove(userBook);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

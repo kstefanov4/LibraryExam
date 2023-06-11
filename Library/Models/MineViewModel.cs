@@ -4,6 +4,6 @@ namespace Library.Models
 {
     public class MineViewModel
     {
-        public IEnumerable<Book> Books { get; set; } = new List<Book>();
+        public IEnumerable<BookViewModel> Books { get; set; } = new List<BookViewModel>();
     }
 }
