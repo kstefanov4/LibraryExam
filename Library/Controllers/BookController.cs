@@ -1,6 +1,7 @@
 ﻿using Library.Contracts;
 using Library.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Configuration;
 using System.Security.Claims;
 
 namespace Library.Controllers
@@ -17,6 +18,44 @@ namespace Library.Controllers
         {
             var model = await bookService.GetAllAsync();
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            AddBookViewModel? book = await bookService.GetBookById(id);
+
+            if (book == null)
+            {
+                return RedirectToAction(nameof(All));
+            }
+
+            var categoties = await bookService.GetAllCategory();
+
+            book.Categories = categoties;
+
+            return View(book);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, AddBookViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                await bookService.EditBookAsync(id, model);
+                return RedirectToAction(nameof(All));
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Something went wrong");
+
+                return View(model);
+            }
         }
 
         [HttpPost]

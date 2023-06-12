@@ -14,7 +14,6 @@ namespace Library.Services
         {
             context = _context;
         }
-
         public async Task AddBookAsync(AddBookViewModel model)
         {
             var book = new Book()
@@ -62,6 +61,24 @@ namespace Library.Services
             }
         }
 
+        public async Task EditBookAsync(int id, AddBookViewModel model)
+        {
+            var book = await context.Books.FindAsync(id);
+
+            if (book != null)
+            {
+                book.Author = model.Author;
+                book.Description = model.Description;
+                book.Title = model.Title;
+                book.Rating = model.Rating;
+                book.CategoryId = model.CategoryId;
+                book.ImageUrl = model.Url;
+
+                await context.SaveChangesAsync();
+            }
+
+        }
+
         public async Task<IEnumerable<AllBookViewModelcs>> GetAllAsync()
         {
             var entities = await context.Books
@@ -82,6 +99,23 @@ namespace Library.Services
         public async Task<IEnumerable<Category>> GetAllCategory()
         {
             return await context.Categories.ToListAsync();
+        }
+
+        public async Task<AddBookViewModel?> GetBookById(int id)
+        {
+            var book = await context.Books
+                .Where(b => b.Id == id)
+                .Select(x => new AddBookViewModel
+                {
+                    Title = x.Title,
+                    Author = x.Author,
+                    Rating = x.Rating,
+                    Description = x.Description,
+                    Url = x.ImageUrl,
+                    CategoryId = x.CategoryId
+                }).FirstOrDefaultAsync();
+
+            return book;
         }
 
         public async Task<MineViewModel> GetMineBooksAsync(string userId)

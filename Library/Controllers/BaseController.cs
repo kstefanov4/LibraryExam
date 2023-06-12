@@ -10,7 +10,7 @@ namespace Library.Controllers
     {
         protected string? GetUserId()
         {
-            string id = string.Empty;
+            string? id = string.Empty;
 
             if (User != null)
             {
