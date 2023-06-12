@@ -15,6 +15,21 @@ namespace Library.Services
             context = _context;
         }
 
+        public async Task AddBookAsync(AddBookViewModel model)
+        {
+            var book = new Book()
+            {
+                Title = model.Title,
+                Author = model.Author,
+                Description = model.Description,
+                ImageUrl = model.Url,
+                Rating = model.Rating,
+                CategoryId = model.CategoryId
+            };
+            await context.Books.AddAsync(book);
+            await context.SaveChangesAsync();
+        }
+
         public async Task AddBookToCollectionAsync(int bookId, string userId)
         {
             var user = await context.Users
@@ -62,6 +77,11 @@ namespace Library.Services
                 ImageUrl = x.ImageUrl,
                 Category = x?.Category?.Name
             });
+        }
+
+        public async Task<IEnumerable<Category>> GetAllCategory()
+        {
+            return await context.Categories.ToListAsync();
         }
 
         public async Task<MineViewModel> GetMineBooksAsync(string userId)
