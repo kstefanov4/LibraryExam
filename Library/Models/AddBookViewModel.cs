@@ -16,6 +16,8 @@ namespace Library.Models
         [Required]
         [StringLength(5000, MinimumLength = 5)]
         public string Description { get; set; }
+        
+        [Url]
         public string Url { get; set; }
 
         [Required]
