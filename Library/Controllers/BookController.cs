@@ -66,6 +66,8 @@ namespace Library.Controllers
                 return View(model);
             }
 
+            model.Url = RemoveWhitespaces(model.Url);
+
             try
             {
                 await bookService.AddBookAsync(model);
@@ -78,6 +80,7 @@ namespace Library.Controllers
                 return View(model);
             }
         }
+
 
         public async Task<IActionResult> Add()
         {
@@ -123,6 +126,14 @@ namespace Library.Controllers
             }
 
             return RedirectToAction("All");
+        }
+
+        private static string RemoveWhitespaces(string input)
+        {
+            return input.Where(c => !Char.IsWhiteSpace(c))
+                .Select(c => c.ToString())
+                .Aggregate((a, b) => a + b);
+
         }
     }
 }
